@@ -22,10 +22,15 @@ project-folder/
 ├── css/
 <br>
 │ └── style.css
+<br>
 ├── js/
+<br>
 │ ├── app.js
+<br>
 │ ├── taskManager.js
+<br>
 │ └── ui.js
+<br>
 └── README.md
 
 text
