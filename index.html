@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Modern Task Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">
+                    <i class="fas fa-rocket"></i>
+                    <h1>TaskFlow</h1>
+                </div>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-stats">
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-tasks">0</span>
+                        <span class="stat-label">Total Tasks</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="completed-tasks">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="pending-tasks">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon overdue">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="overdue-tasks">0</span>
+                        <span class="stat-label">Overdue</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-filter="all">
+                    <i class="fas fa-th-large"></i>
+                    <span>All Tasks</span>
+                </button>
+                <button class="nav-btn" data-filter="today">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Today</span>
+                </button>
+                <button class="nav-btn" data-filter="upcoming">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Upcoming</span>
+                </button>
+                <button class="nav-btn" data-filter="overdue">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Overdue</span>
+                    <span class="nav-badge" id="overdue-badge">0</span>
+                </button>
+                <button class="nav-btn" data-filter="completed">
+                    <i class="fas fa-check-double"></i>
+                    <span>Completed</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">You</span>
+                        <span class="user-status">Productive Mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <div class="header-actions">
+                    <button class="btn-primary" id="add-task-btn">
+                        <i class="fas fa-plus"></i>
+                        New Task
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Search tasks...">
+                    </div>
+                </div>
+                <div class="header-filters">
+                    <div class="filter-group">
+                        <label>Sort by:</label>
+                        <select id="sort-select">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="deadline">Deadline</option>
+                            <option value="priority">Priority</option>
+                            <option value="title">Title A-Z</option>
+                        </select>
+                    </div>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="view-btn" data-view="grid">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <div class="stat-circle high">
+                            <span id="high-priority-count">0</span>
+                        </div>
+                        <span>High Priority</span>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-circle today">
+                            <span id="today-count">0</span>
+                        </div>
+                        <span>Due Today</span>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-circle week">
+                            <span id="week-count">0</span>
+                        </div>
+                        <span>This Week</span>
+                    </div>
+                </div>
+
+                <!-- Tasks Container -->
+                <div class="tasks-container" id="tasks-container">
+                    <!-- Tasks will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="add-task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Task</h2>
+                <button class="close-btn" id="close-add-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Task Title *</label>
+                    <input type="text" class="form-input" id="task-title" placeholder="What needs to be done?">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-textarea" id="task-description" placeholder="Add details..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Deadline</label>
+                        <input type="datetime-local" class="form-input" id="task-deadline">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-flag"></i> Priority</label>
+                        <select class="form-select" id="task-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Category</label>
+                    <div class="category-tags">
+                        <span class="category-tag" data-category="work">Work</span>
+                        <span class="category-tag" data-category="personal">Personal</span>
+                        <span class="category-tag" data-category="shopping">Shopping</span>
+                        <span class="category-tag" data-category="health">Health</span>
+                        <span class="category-tag" data-category="other">Other</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancel-add-task">Cancel</button>
+                <button class="btn-primary" id="save-task">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal" id="edit-task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Task</h2>
+                <button class="close-btn" id="close-edit-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Task Title *</label>
+                    <input type="text" class="form-input" id="edit-title">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-textarea" id="edit-description"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Deadline</label>
+                        <input type="datetime-local" class="form-input" id="edit-deadline">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-flag"></i> Priority</label>
+                        <select class="form-select" id="edit-priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tags"></i> Category</label>
+                    <div class="category-tags">
+                        <span class="category-tag" data-category="work">Work</span>
+                        <span class="category-tag" data-category="personal">Personal</span>
+                        <span class="category-tag" data-category="shopping">Shopping</span>
+                        <span class="category-tag" data-category="health">Health</span>
+                        <span class="category-tag" data-category="other">Other</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger" id="delete-task">Delete Task</button>
+                <div>
+                    <button class="btn-secondary" id="cancel-edit">Cancel</button>
+                    <button class="btn-primary" id="save-edit">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div class="modal" id="task-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Task Details</h2>
+                <button class="close-btn" id="close-details-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="task-details">
+                    <h3 id="details-title"></h3>
+                    <div class="task-meta-details">
+                        <div class="meta-item">
+                            <i class="fas fa-flag"></i>
+                            <span id="details-priority"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="details-deadline"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tags"></i>
+                            <span id="details-category"></span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="details-created"></span>
+                        </div>
+                    </div>
+                    <div class="task-description-details">
+                        <h4>Description</h4>
+                        <p id="details-description"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="close-details">Close</button>
+                <button class="btn-primary" id="edit-from-details">Edit Task</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/taskManager.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
