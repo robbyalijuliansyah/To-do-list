@@ -33,7 +33,7 @@ project-folder/
 <br>
 └── README.md
 
-text
+
 
 ## Cara Menggunakan
 
