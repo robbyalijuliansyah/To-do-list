@@ -16,8 +16,11 @@ Aplikasi To-Do List modern dengan fitur CRUD lengkap dan penyimpanan lokal.
 
 ## Struktur File
 project-folder/
+<br>
 ├── index.html
+<br>
 ├── css/
+<br>
 │ └── style.css
 ├── js/
 │ ├── app.js
